@@ -1,7 +1,7 @@
 import maya.cmds as cmds
 from maya import OpenMayaUI as omui
 import importlib
-import os.pah
+import os.path
 
 from control_picker.utils import qtpyside
 PySide, wrapInstance = qtpyside.get_version()
