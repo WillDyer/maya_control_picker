@@ -18,9 +18,9 @@ from PySide.QtWidgets import (QWidget,
                               QSizePolicy,
                               QLineEdit)
 
-from control_picker.user_interface.pages import control_libary, sidebar
+from control_picker.user_interface.pages import control_libary, sidebar, settings
 
-ui_pages = [control_libary, sidebar]
+ui_pages = [control_libary, sidebar, settings]
 
 for module_list in [ui_pages]:
     for module in module_list:
@@ -75,6 +75,12 @@ class Interface(QWidget):
         self.libary_layout.setSizeConstraint(QVBoxLayout.SetMaximumSize)
         self.init_controllibary()
         self.main_layout.addWidget(self.libary_widget)
+
+        # Settings array
+        self.settings_layout = QHBoxLayout()
+        self.libary_layout.addLayout(self.settings_layout)
+        settings_instance = settings.settings_ui(self, self.libary_layout, self.settings_layout)
+
     
     def init_controllibary(self):
         settings_label = QLabel("Control Libary:")
