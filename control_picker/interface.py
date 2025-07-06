@@ -18,9 +18,9 @@ from PySide.QtWidgets import (QWidget,
                               QSizePolicy,
                               QLineEdit)
 
-from control_picker.user_interface.pages import control_libary
+from control_picker.user_interface.pages import control_libary, sidebar
 
-ui_pages = [control_libary]
+ui_pages = [control_libary, sidebar]
 
 for module_list in [ui_pages]:
     for module in module_list:
@@ -61,25 +61,11 @@ class Interface(QWidget):
         self.sidebar_widget = QWidget()
         self.sidebar_widget.setMaximumWidth(125)
         self.sidebar_layout = QVBoxLayout(self.sidebar_widget)
+        # self.sidebar_layout.setContentsMargins(10,10,0,0)
         self.sidebar_layout.setSizeConstraint(QVBoxLayout.SetMinimumSize)
         self.sidebar_layout.setSpacing(10)
 
-        # TEMP BUTTONS
-        module_label = QLabel("SETTINGS:")
-        module_label.setFixedSize(125,25)
-        module_label.setStyleSheet("""
-            QLabel {
-                font-weight: bold;
-                font-size: 20px;
-            }
-        """)
-        self.sidebar_layout.addWidget(module_label)
-        for button_name in ["Add","Remove","Trash"]:
-            button = QPushButton(button_name)
-            button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-            button.setObjectName(f"button_{button_name}")
-            self.sidebar_layout.addWidget(button)
-
+        sidebar_instance = sidebar.sidebar_ui(self, self.sidebar_layout)
         self.main_layout.addWidget(self.sidebar_widget)
 
         # Control Libary
@@ -113,17 +99,13 @@ class Interface(QWidget):
         self.scroll_area_layout.setSpacing(5)
 
         # Remove margins and align to top left
-        self.scroll_area_layout.setContentsMargins(0, 0, 0, 0)
+        self.scroll_area_layout.setContentsMargins(8, 8, 0, 0)
         self.scroll_area_layout.setAlignment(Qt.AlignTop | Qt.AlignLeft)
 
         self.scroll_area.setWidget(container_widget)
         self.scroll_area.setWidgetResizable(True)
+        # self.scroll_area.setContentsMargins(5,5,5,5)
         self.libary_layout.addWidget(self.scroll_area)
-        
-        # for x in ["1","2","3","4"]:
-        #     button = QPushButton(x)
-        #     button.setFixedSize(82,82)
-        #     self.scroll_area_layout.addWidget(button)
             
         control_libary_instance = control_libary.libary_ui(self, self.scroll_area_layout, self.libary_layout)
     
