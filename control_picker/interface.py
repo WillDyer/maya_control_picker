@@ -2,11 +2,12 @@ import maya.cmds as cmds
 from maya import OpenMayaUI as omui
 import importlib
 import os.path
+from functools import partial
 
 from control_picker.utils import qtpyside
 PySide, wrapInstance = qtpyside.get_version()
 
-from PySide.QtCore import Qt
+from PySide.QtCore import Qt, QObject, SIGNAL
 from PySide.QtGui import QIcon
 from PySide.QtWidgets import (QWidget,
                               QVBoxLayout,
@@ -19,10 +20,12 @@ from PySide.QtWidgets import (QWidget,
                               QLineEdit)
 
 from control_picker.user_interface.pages import control_libary, sidebar, settings
+from control_picker.script import remove, add
 
 ui_pages = [control_libary, sidebar, settings]
+scripts = [remove, add]
 
-for module_list in [ui_pages]:
+for module_list in [ui_pages, scripts]:
     for module in module_list:
         importlib.reload(module)
 
@@ -45,6 +48,8 @@ class Interface(QWidget):
         self.setWindowTitle(UI_NAME)
         self.setObjectName(UI_NAME)
 
+        self.connections()
+
     def initUI(self):
         # Base Layout
         self.verticle_layout = QVBoxLayout(self)
@@ -66,6 +71,7 @@ class Interface(QWidget):
         self.sidebar_layout.setSpacing(10)
 
         sidebar_instance = sidebar.sidebar_ui(self, self.sidebar_layout)
+        self.add_button, self.trash_button = sidebar_instance.return_objects()
         self.main_layout.addWidget(self.sidebar_widget)
 
         # Control Libary
@@ -113,8 +119,12 @@ class Interface(QWidget):
         # self.scroll_area.setContentsMargins(5,5,5,5)
         self.libary_layout.addWidget(self.scroll_area)
             
-        control_libary_instance = control_libary.libary_ui(self, self.scroll_area_layout, self.libary_layout)
+        self.control_libary_instance = control_libary.libary_ui(self, self.scroll_area_layout, self.libary_layout)
     
+    def connections(self):
+        QObject.connect(self.trash_button, SIGNAL("clicked()"), lambda: remove.remove_ctrl(button=self.control_libary_instance.return_selected(), layout=self.scroll_area_layout))
+        QObject.connect(self.add_button, SIGNAL("clicked()"), lambda: partial(add.add_control(), self.control_libary_instance.refresh_libary()))
+
     def set_style(self):
         stylesheet_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"user_interface","style","style.css")
         with open(stylesheet_path,"r") as file:
