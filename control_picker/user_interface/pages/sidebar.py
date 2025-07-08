@@ -49,6 +49,11 @@ class sidebar_ui(QWidget):
             button.setObjectName(f"button_{button_name}")
             self.sidebar_layout.addWidget(button)
 
+            if button_name == "add":
+                self.add_button = button
+            elif button_name == "trash":
+                self.trash_button = button
+
     def colour_button(self):
         colour_widget = QWidget()
         colour_widget.setContentsMargins(0,0,0,0)
@@ -120,3 +125,5 @@ class sidebar_ui(QWidget):
     def set_colour_preset(self, button, colour_button):
         colour_button.setStyleSheet(f"background-color: rgb({self.colour_dict[button.objectName()]['red']}, {self.colour_dict[button.objectName()]['green']}, {self.colour_dict[button.objectName()]['blue']});")
 
+    def return_objects(self):
+        return self.add_button, self.trash_button
