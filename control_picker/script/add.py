@@ -17,6 +17,7 @@ class add_control():
         if file_name:
             filepath = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","libary",f"{file_name}.abc")
         else:
+            cmds.warning("Failed to get file path for libary.")
             return
 
         sel = cmds.ls(selection=True, long=True)

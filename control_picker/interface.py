@@ -20,10 +20,10 @@ from PySide.QtWidgets import (QWidget,
                               QLineEdit)
 
 from control_picker.user_interface.pages import control_libary, sidebar, settings
-from control_picker.script import remove, add
+from control_picker.script import remove, add, make_control
 
 ui_pages = [control_libary, sidebar, settings]
-scripts = [remove, add]
+scripts = [remove, add, make_control]
 
 for module_list in [ui_pages, scripts]:
     for module in module_list:
@@ -83,9 +83,14 @@ class Interface(QWidget):
         self.main_layout.addWidget(self.libary_widget)
 
         # Settings array
-        self.settings_layout = QHBoxLayout()
-        self.libary_layout.addLayout(self.settings_layout)
-        settings_instance = settings.settings_ui(self, self.libary_layout, self.settings_layout)
+        self.settings_layout_vert = QVBoxLayout()
+        self.settings_layout_top = QHBoxLayout()
+        self.settings_layout_botton = QHBoxLayout()
+        self.libary_layout.addLayout(self.settings_layout_vert)
+        self.settings_layout_vert.addLayout(self.settings_layout_top)
+        self.settings_layout_vert.addLayout(self.settings_layout_botton)
+        settings_instance = settings.settings_ui(self, self.libary_layout, self.settings_layout_top, self.settings_layout_botton)
+        self.make_button = settings_instance.return_widgets()
 
     
     def init_controllibary(self):
@@ -124,6 +129,7 @@ class Interface(QWidget):
     def connections(self):
         QObject.connect(self.trash_button, SIGNAL("clicked()"), lambda: remove.remove_ctrl(button=self.control_libary_instance.return_selected(), layout=self.scroll_area_layout))
         QObject.connect(self.add_button, SIGNAL("clicked()"), lambda: partial(add.add_control(), self.control_libary_instance.refresh_libary()))
+        QObject.connect(self.make_button, SIGNAL("clicked()"), lambda: make_control.make(button=self.control_libary_instance.return_selected()))
 
     def set_style(self):
         stylesheet_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"user_interface","style","style.css")

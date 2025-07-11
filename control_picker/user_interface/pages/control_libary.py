@@ -78,4 +78,7 @@ class libary_ui(QWidget):
         self.button = button
 
     def return_selected(self):
-        return self.button
+        if self.button:
+            return self.button
+        else:
+            return None
