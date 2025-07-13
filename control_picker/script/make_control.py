@@ -3,8 +3,10 @@ import os
 
 
 class make():
-    def __init__(self, button):
-        print("running make")
+    def __init__(self, button, sidebar_instance, settings_instance):
+        self.sidebar_instance = sidebar_instance
+        self.settings_instance = settings_instance
+
         self.load_dependencies()
         self.return_qobject(button)
 
@@ -29,5 +31,30 @@ class make():
             cmds.warning("Failed to get file path for libary.")
             return
         
+        scene_before = set(cmds.ls(long=True))
+
         cmds.AbcImport(filepath, mode="import")
+        
+        scene_after = set(cmds.ls(long=True))
+        control = list(scene_after - scene_before)
+        control = [obj for obj in control if "Shape" not in obj]
+
+        self.set_colour(control)
+        self.set_name(control)
+
+    def set_colour(self, control):
+        for item in control:
+            rgb_colour = self.sidebar_instance.return_colour()
+
+            cmds.setAttr(f"{item}.overrideEnabled", True)
+            cmds.setAttr(f"{item}.overrideRGBColors", True)
+            
+            colour = [c / 255.0 for c in rgb_colour]
+            cmds.setAttr(f"{item}.overrideColorR", colour[0])
+            cmds.setAttr(f"{item}.overrideColorG", colour[1])
+            cmds.setAttr(f"{item}.overrideColorB", colour[2])
+
+    def set_name(self, control):
+        for item in control:
+            cmds.rename()
         

@@ -72,11 +72,12 @@ class sidebar_ui(QWidget):
                 font-size: 20px;
             }
         """)
-
+        
+        self.colour = [255, 255, 0] # init default colour
         self.colour_dict = {
-                "L_button": {"red": "255", "green": "0", "blue": "0"}, #[255, 0, 0],
-                "C_button": {"red": "255", "green": "255", "blue": "0"}, #[255, 255, 0],
-                "R_button": {"red": "0", "green": "0", "blue": "255"} # [0, 0, 255]
+                "L_button": {"red": 255, "green": 0, "blue": 0}, #[255, 0, 0],
+                "C_button": {"red": 255, "green": 255, "blue": 0}, #[255, 255, 0],
+                "R_button": {"red": 0, "green": 0, "blue": 255} # [0, 0, 255]
             }
 
         colour_button = QPushButton()
@@ -107,10 +108,8 @@ class sidebar_ui(QWidget):
     def set_colour(self, button):
         colour = self.get_colour()
         if colour:
-            button.setStyleSheet(f"background-color: rgb({colour['red']}, {colour['green']}, {colour['blue']});")
-            colour_dict = {"red": colour['red'],
-                           "green": colour['green'],
-                           "blue": colour['blue']}
+            button.setStyleSheet(f"background-color: rgb({colour[0]}, {colour[1]}, {colour[2]});")
+            self.colour = [colour[0], colour[1], colour[2]]
 
     def get_colour(self):
         colour = QColorDialog.getColor()
@@ -118,12 +117,16 @@ class sidebar_ui(QWidget):
             red = colour.red()
             green = colour.green()
             blue = colour.blue()
-            return {"red":red, "green":green, "blue":blue}
+            return [red, green, blue]
         else:
             return None
 
     def set_colour_preset(self, button, colour_button):
         colour_button.setStyleSheet(f"background-color: rgb({self.colour_dict[button.objectName()]['red']}, {self.colour_dict[button.objectName()]['green']}, {self.colour_dict[button.objectName()]['blue']});")
+        self.colour = [self.colour_dict[button.objectName()]["red"],self.colour_dict[button.objectName()]["green"],self.colour_dict[button.objectName()]["blue"]]
 
     def return_objects(self):
         return self.add_button, self.trash_button
+
+    def return_colour(self):
+        return self.colour

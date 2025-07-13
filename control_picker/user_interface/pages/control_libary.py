@@ -4,7 +4,8 @@ import string
 from control_picker.utils import qtpyside
 PySide, wrapInstance = qtpyside.get_version()
 
-from PySide.QtCore import Qt, QObject, SIGNAL
+from PySide.QtCore import Qt, QObject, QSize, SIGNAL
+from PySide.QtGui import QIcon
 from PySide.QtWidgets import (QWidget,
                               QHBoxLayout,
                               QVBoxLayout,
@@ -32,11 +33,17 @@ class libary_ui(QWidget):
         maximum_row = 4
         row_index = -1
         column_index = 0
+        icon_padding = 10
 
         files = [".".join(f.split(".")[:-1]) for f in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'libary'))]
         try: files.remove("")
         except ValueError: pass
         files = [f for f in files if f not in ["__init__"]]
+
+        icon_path = [".".join(f.split(".")[:-1]) for f in os.listdir(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','icons'))]
+        try: files.remove("")
+        except ValueError: pass
+        icon_files = [f for f in icon_path if f not in ["__init__"]]
 
         for x in files:
             if x in self.existing_buttons:
@@ -46,13 +53,28 @@ class libary_ui(QWidget):
             button_name = x.replace("_","")
             button_name = string.capwords(button_name)
 
-            button = QPushButton(f"{button_name}")
+            button = QPushButton()
             button.setCheckable(True)
             button.setFixedSize(100,100)
             button.setObjectName(f"button_{button_name}")
 
+            button.setStyleSheet("""
+                QPushButton {
+                    font-weight: bold;
+                    font-size: 20px;
+                }
+            """)
+
             self.button_group.addButton(button)
             self.existing_buttons.add(x)
+
+            if x in icon_files:
+                icon = QIcon(os.path.join(os.path.dirname(os.path.abspath(__file__)),"..","icons",f"{x}.png"))
+                button.setIcon(icon)
+                icon_size = button.size() - QSize(icon_padding, icon_padding)
+                button.setIconSize(icon_size)
+            else:
+                button.setText(x)
             
             if row_index == maximum_row:
                 row_index = 0
