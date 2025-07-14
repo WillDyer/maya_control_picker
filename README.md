@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/Qt-41CD52?style=for-the-badge&logo=Qt&logoColor=white">
 </p>
 <div align="center">
-    <img src="images/MCP.png" alt="Project Screenshot" width="700"/>
+    <img src="images/MCP.png" alt="Project UI" width="700"/>
 </div>
 
 ### Running The Tool
