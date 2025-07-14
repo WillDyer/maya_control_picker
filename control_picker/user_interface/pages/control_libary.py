@@ -80,7 +80,7 @@ class libary_ui(QWidget):
                 row_index = 0
                 column_index += 1
 
-            print(f"row_index: {row_index}, column_index: {column_index}")
+            # print(f"row_index: {row_index}, column_index: {column_index}")
             self.scroll_area_layout.addWidget(button,column_index, row_index)
             
             QObject.connect(button, SIGNAL("clicked()"), lambda b=button: self.hold_selected(b))
@@ -96,7 +96,7 @@ class libary_ui(QWidget):
         self.add_buttons()
 
     def hold_selected(self, button):
-        print(f"selected button: {button}")
+        # print(f"selected button: {button}")
         self.button = button
 
     def return_selected(self):

@@ -44,13 +44,13 @@ class settings_ui(QWidget):
             }
         """)
 
-        ctrl_name = QLineEdit("ctrl_name")
-        ctrl_name.setObjectName("ctrl_name")
-        ctrl_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.ctrl_name = QLineEdit("ctrl_name")
+        self.ctrl_name.setObjectName("ctrl_name")
+        self.ctrl_name.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         # ctrl_name.setContentMargins(0,5,5,0)
 
         self.layout_top.addWidget(ctrl_label)
-        self.layout_top.addWidget(ctrl_name)
+        self.layout_top.addWidget(self.ctrl_name)
 
     def ctrl_axis(self):
         rotation_orders = ['xyz','yzx','zxy','xzy','yxz','zyx']
@@ -62,14 +62,14 @@ class settings_ui(QWidget):
             }
         """)
         
-        axis_combobox = QComboBox()
-        axis_combobox.setObjectName("axis_combobo")
-        axis_combobox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        axis_combobox.addItems(rotation_orders)
-        axis_combobox.setFixedWidth(50)
+        self.axis_combobox = QComboBox()
+        self.axis_combobox.setObjectName("axis_combobo")
+        self.axis_combobox.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.axis_combobox.addItems(rotation_orders)
+        self.axis_combobox.setFixedWidth(50)
 
         self.layout_top.addWidget(axis_label)
-        self.layout_top.addWidget(axis_combobox)
+        self.layout_top.addWidget(self.axis_combobox)
 
     def ctrl_side(self):
         rig_side = ['L','C','R']
@@ -116,11 +116,11 @@ class settings_ui(QWidget):
                 font-size: 10px;
             }
         """)
-        checkbox = QCheckBox()
+        self.chain_checkbox = QCheckBox()
 
         layout_hoz = QHBoxLayout()
         layout_hoz.addWidget(heirachy_label)
-        layout_hoz.addWidget(checkbox)
+        layout_hoz.addWidget(self.chain_checkbox)
         layout_hoz.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.layout_bottom.addLayout(layout_hoz)
 
@@ -132,11 +132,11 @@ class settings_ui(QWidget):
                                           font-size: 10px;
                                           }
                                       """)
-        checkbox = QCheckBox()
+        self.constrain_checkbox = QCheckBox()
 
         layout_hoz = QHBoxLayout()
         layout_hoz.addWidget(constrain_label)
-        layout_hoz.addWidget(checkbox)
+        layout_hoz.addWidget(self.constrain_checkbox)
         layout_hoz.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
         self.layout_bottom.addLayout(layout_hoz)
 
