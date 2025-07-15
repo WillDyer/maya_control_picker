@@ -28,7 +28,7 @@ class settings_ui(QWidget):
 
         self.ctrl_name()
         self.ctrl_axis()
-        self.ctrl_side()
+        self.ctrl_match()
 
         self.build_on_heirachy()
         self.constrain()
@@ -71,42 +71,22 @@ class settings_ui(QWidget):
         self.layout_top.addWidget(axis_label)
         self.layout_top.addWidget(self.axis_combobox)
 
-    def ctrl_side(self):
-        rig_side = ['L','C','R']
-        side_label = QLabel("SIDE:")
-        side_label.setStyleSheet("""
+    def ctrl_match(self):
+        match_label = QLabel("MATCH:")
+        match_label.setStyleSheet("""
             QLabel {
                 font-weight: bold;
                 font-size: 10px;
             }
         """)
-        self.layout_top.addWidget(side_label)
+        self.match_checkbox = QCheckBox()
+        self.match_checkbox.setChecked(True)
 
-        self.horizontal = QHBoxLayout()
-        self.horizontal.setSpacing(3)
-
-        self.button_group = QButtonGroup(self.interface_class)
-        self.button_group.setExclusive(True)
-        
-        for x in rig_side:
-            side_button = QPushButton(x)
-            side_button.setObjectName(f"button_side_{x}")
-            side_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-            side_button.setFixedWidth(25)
-            side_button.setCheckable(True)
-            side_button.setStyleSheet("""
-                                      QPushButton {
-                                          font-weight: bold;
-                                          }
-                                      """)
-            
-            self.button_group.addButton(side_button)
-            self.horizontal.addWidget(side_button)
-
-            if x == "C":
-                side_button.setChecked(True)
-
-        self.layout_top.addLayout(self.horizontal)
+        layout_hoz = QHBoxLayout()
+        layout_hoz.addWidget(match_label)
+        layout_hoz.addWidget(self.match_checkbox)
+        layout_hoz.setAlignment(Qt.AlignVCenter | Qt.AlignLeft)
+        self.layout_top.addLayout(layout_hoz)
 
     def build_on_heirachy(self):
         heirachy_label = QLabel("CHAIN:")
@@ -155,11 +135,6 @@ class settings_ui(QWidget):
                             """)
 
         self.replace_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        # self.replace_button.setFixedWidth(200)
-
-        # spacer = QSpacerItem(40,0,QSizePolicy.Expanding, QSizePolicy.Minimum)
-        # self.layout_bottom.addItem(spacer)
-
         self.layout_bottom.addWidget(self.replace_button)
 
     def make_control(self):
@@ -177,13 +152,8 @@ class settings_ui(QWidget):
                             """)
 
         self.make_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        # self.make_button.setFixedWidth(200)
-
-        # spacer = QSpacerItem(40,0,QSizePolicy.Expanding, QSizePolicy.Minimum)
-        # self.layout_bottom.addItem(spacer)
-
         self.layout_bottom.addWidget(self.make_button)
 
 
     def return_widgets(self):
-        return self.make_button
+        return self.make_button, self.replace_button

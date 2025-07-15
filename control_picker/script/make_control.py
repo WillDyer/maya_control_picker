@@ -6,7 +6,7 @@ from control_picker.utils import OPM
 reload(OPM)
 
 class make():
-    def __init__(self, button, sidebar_instance, settings_instance):
+    def __init__(self, button, sidebar_instance, settings_instance, make):
         self.sidebar_instance = sidebar_instance
         self.settings_instance = settings_instance
 
@@ -14,12 +14,17 @@ class make():
         button_name = self.return_qobject(button)
 
         if button_name:
-            if self.settings_instance.chain_checkbox.isChecked():
-                control_list = self.chain(file_name=button_name)
+            if make:
+                if self.settings_instance.chain_checkbox.isChecked():
+                    control_list = self.chain(file_name=button_name)
+                else:
+                    control_list = self.import_ctrl(file_name=button_name)
+                    if self.settings_instance.match_checkbox.isChecked():
+                        self.match(control=control_list)
+                    if self.settings_instance.constrain_checkbox.isChecked():
+                        self.constrain(joint=cmds.ls(sl=True)[0], control=control_list)
             else:
-                control_list = self.import_ctrl(file_name=button_name)
-                if self.settings_instance.constrain_checkbox.isChecked():
-                    self.constrain(joint=cmds.ls(sl=True)[0], control=control_list)
+                self.init_change(button_name)
 
     def load_dependencies(self):
         for plugin in ("AbcExport","AbcImport"):
@@ -75,8 +80,13 @@ class make():
     def axis(self, item):
         cmds.setAttr(f"{item}.rotateOrder", self.settings_instance.axis_combobox.currentIndex())
 
-    def side(self):
-        pass
+    def match(self, control):
+        for item in control:
+            if cmds.ls(sl=True):
+                cmds.matchTransform(item, cmds.ls(sl=True)[0])
+                OPM.offsetParentMatrix(ctrl=item)
+            else:
+                cmds.warning("Skipping match transform no selection found")
 
     def chain(self, file_name):
         last_item = None
@@ -104,3 +114,28 @@ class make():
     def constrain(self, joint, control):
         for item in control:
             cmds.parentConstraint(control, joint, mo=True, name=f"pConst_{control}")
+
+    def init_change(self, button_name):
+        def change_control(selected):
+            for item in selected:
+                target = cmds.listRelatives(item, shapes=True, fullPath=True)
+                control_list = self.import_ctrl(file_name=button_name)
+                if target:
+                    old_shapes = target + control_list
+                    for control in control_list:
+                        shape = cmds.listRelatives(control, shapes=True, fullPath=True)
+                        cmds.parent(shape, item, shape=True, relative=True)
+                    cmds.delete(old_shapes)
+                else:
+                    cmds.warning("No target shape found to replace")
+
+        selected = cmds.ls(sl=True)
+        for control in selected:
+            if self.settings_instance.chain_checkbox.isChecked():
+                chain = cmds.listRelatives(control, ad=True, type="transform") + [control]
+                chain.reverse()
+                print(chain)
+                change_control(selected=chain)
+            else:
+                change_control(selected=[control])
+

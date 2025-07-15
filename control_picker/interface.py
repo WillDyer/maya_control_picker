@@ -90,7 +90,7 @@ class Interface(QWidget):
         self.settings_layout_vert.addLayout(self.settings_layout_top)
         self.settings_layout_vert.addLayout(self.settings_layout_botton)
         self.settings_instance = settings.settings_ui(self, self.libary_layout, self.settings_layout_top, self.settings_layout_botton)
-        self.make_button = self.settings_instance.return_widgets()
+        self.make_button, self.replace_button = self.settings_instance.return_widgets()
 
     
     def init_controllibary(self):
@@ -129,7 +129,8 @@ class Interface(QWidget):
     def connections(self):
         QObject.connect(self.trash_button, SIGNAL("clicked()"), lambda: remove.remove_ctrl(button=self.control_libary_instance.return_selected(), layout=self.scroll_area_layout))
         QObject.connect(self.add_button, SIGNAL("clicked()"), lambda: partial(add.add_control(), self.control_libary_instance.refresh_libary()))
-        QObject.connect(self.make_button, SIGNAL("clicked()"), lambda: make_control.make(button=self.control_libary_instance.return_selected(), sidebar_instance=self.sidebar_instance, settings_instance=self.settings_instance))
+        QObject.connect(self.make_button, SIGNAL("clicked()"), lambda: make_control.make(button=self.control_libary_instance.return_selected(), sidebar_instance=self.sidebar_instance, settings_instance=self.settings_instance, make=True))
+        QObject.connect(self.replace_button, SIGNAL("clicked()"), lambda: make_control.make(button=self.control_libary_instance.return_selected(), sidebar_instance=self.sidebar_instance, settings_instance=self.settings_instance, make=False))
 
     def set_style(self):
         stylesheet_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"user_interface","style","style.css")
